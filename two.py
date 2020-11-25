@@ -28,7 +28,7 @@ class TwoBot:
             exit(2)
         try:
             self.SLACK_TOKEN = config['slack_token']
-            self.KEYWORD = str(config['keyword']) # 2 in YAML will be a number, not str
+            self.KEYWORD = str(config['keyword']).split(',') # 2 in YAML will be a number, not str
             self.COMMAND = config['command']
             self.FILENAME = config.get("data_file", "twodata.json")
             self.API_ENABLE = config.get("api_enable", False)
@@ -267,9 +267,9 @@ class TwoBot:
             await self.handle_command(msgtext, channelid)
 
         if any([
-                msgtext == self.KEYWORD,
-                msgtext == "_%s_" % (self.KEYWORD),
-                msgtext == "*%s*" % (self.KEYWORD)
+                msgtext in self.KEYWORD,
+                msgtext.replace('_') in self.KEYWORD,
+                msgtext.replace('*') in self.KEYWORD
             ]):
             print("Message in %s, from %s: %s" %
                     (channel.get("name"), TwoBot.user_name(user), data.get("text")))
